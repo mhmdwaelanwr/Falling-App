@@ -7,14 +7,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.falling.anwar.ui.theme.HealthcareTextSecondary
 import com.falling.anwar.ui.theme.NormalGreen
 import kotlinx.datetime.Instant
@@ -30,7 +30,7 @@ fun StatusBadge(
 ) {
     val infiniteTransition = rememberInfiniteTransition()
     val pulseScale by if (reduceMotion) {
-        mutableStateOf(1f)
+        remember { mutableStateOf(1f) }
     } else {
         infiniteTransition.animateFloat(
             initialValue = 1f,
@@ -125,7 +125,7 @@ fun LastEventCard(timestamp: Long?) {
                 "LAST EVENT",
                 style = MaterialTheme.typography.labelSmall,
                 color = HealthcareTextSecondary,
-                letterSpacing = androidx.compose.ui.unit.sp(1.2)
+                letterSpacing = 1.2.sp
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
