@@ -1,107 +1,117 @@
-# Falling App
-> **Emergency Fall Detection & Response System**
+# Falling App 🛡️
 
-[![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-brightgreen)](#)
-[![Kotlin](https://img.shields.io/badge/Kotlin-Multiplatform-blue)](https://kotlinlang.org/docs/multiplatform.html)
-[![Compose](https://img.shields.io/badge/Compose-Multiplatform-orange)](https://www.jetbrains.com/lp/compose-multiplatform/)
+**Falling App** is a high-performance, cross-platform fall detection and emergency response system built with **Kotlin Multiplatform (KMP)** and **Compose Multiplatform**. It is designed to provide immediate assistance to elderly or high-risk individuals by bridging the gap between hardware sensors and emergency responders.
 
-## 1. Concept & Problem Statement
-Falling App is a healthcare-grade safety monitoring application designed to detect and respond to emergency fall events for seniors.
-
-The system consumes events from an AI-powered sensor system that outputs exactly two states: **FALL** or **NO_FALL**. The app prioritizes safety and stability, ensuring that once a fall is detected, the alert remains active until manually cleared by the user.
-
-**Core Logic:**
-*   **Safety Lock:** A `FALL` detection triggers an irreversible **ALERT** state that ignores subsequent `NO_FALL` signals.
-*   **Senior-Friendly UI:** Large typography, high-contrast elements, and big tap targets (>= 48dp) designed for accessibility.
-*   **Manual Acknowledgment:** Only the "I'M OK" button can silence the siren and reset the app.
+Developed by **Anwar** (com.falling.anwar).
 
 ---
 
-## 2. Features
-- **Healthcare UI:** Clean, clinical design (mostly white) with teal/blue accents.
-- **Shared UI (Compose Multiplatform):** Unified design and logic for both Android and iOS in `commonMain`.
-- **Tasteful Animations:** Calm breathing pulses on status indicators and smooth screen transitions.
-- **Hidden Debug Panel:** Access developer tools by tapping the "Falling App" title 4 times (Debug builds only).
-- **Persistent State:** App state (Normal/Alert) is saved and restored even after app restarts.
-- **Android Alert Mechanism:**
-    - **Foreground Service:** Ensures the alarm continues even if the app is closed.
-    - **High-Priority Notification:** Immediate visibility on the lock screen.
-    - **Looping Siren:** High-decibel emergency audio (`siren.mp3`).
+## 🚀 Overview
+
+The system architecture follows a reactive flow:
+1. **Hardware Sensors**: Collect movement data from an external AI-powered device.
+2. **AI Engine**: Processes sensor data into a binary state: `FALL` or `NO_FALL`.
+3. **Falling App**: Consumes these events. Upon a `FALL` detection, it triggers a critical alert. Unlike standard systems, a `NO_FALL` event after a `FALL` will **not** clear the alert. Manual acknowledgement is mandatory to ensure the user is truly safe.
 
 ---
 
-## 3. UI/UX Design
+## ✨ Features
 
-### Color Tokens
-- **Background:** #FFFFFF (Clinical White)
-- **Normal:** #009688 (Care Teal)
-- **Alert:** #D32F2F (Alert Red)
-- **Text:** #111827 (High Contrast)
-
-### Screens
-1. **NORMAL Screen:** Displays "Monitoring" status with a gentle breathing pulse. Shows the timestamp of the last detected event.
-2. **ALERT Screen:** Soft red tint with a clear "FALL DETECTED" warning. Features two large action buttons: "I'M OK" and "Call Emergency".
+- **Cross-Platform UI**: Shared high-end healthcare UI using Compose Multiplatform.
+- **Critical Alert System**: High-intensity visual and audible alarms.
+- **Android Foreground Service**: Ensures the siren and monitoring persist even if the app is in the background or killed.
+- **Siren & Notifications**: Uses a dedicated notification channel `fall_alerts` with a loud siren sound (`alarm.mp3`).
+- **Smart Logic**: Strictly follows the "I'M OK" protocol for clearing emergencies.
+- **Senior-Friendly UX**: High-contrast, minimalist white UI with large, easy-to-tap buttons and clear feedback.
+- **Hidden Debug Suite**: Integrated simulation tool for developers and demonstrators.
 
 ---
 
-## 4. Repository Structure
+## 🔄 UX Flow
 
+1. **NORMAL State**: Displayed in a calming Green theme with "SAFE" status. Monitoring is active in the background.
+2. **FALL Event**: The AI hardware transmits a fall signal.
+3. **ALERT State**: 
+    - UI immediately switches to a tactical Red theme.
+    - Full-volume siren (`alarm.mp3`) blasts continuously.
+    - A persistent foreground notification appears in the `fall_alerts` channel.
+    - A 30-second emergency countdown is initiated.
+4. **I'M OK**: The user must tap the large green "I AM SAFE" button. This is the only way to silence the siren and return to `NORMAL`.
+5. **Emergency Call**: If the user is unable to tap "I'M OK", a prominent "CALL EMERGENCY" button provides one-tap access to help.
+
+---
+
+## 🏗️ Architecture
+
+The project leverages a clean **Kotlin Multiplatform** structure:
+- **`shared/commonMain`**: Contains the core logic (`FallStore`), domain models, and the shared Compose UI (Screens & Components).
+- **`composeApp/androidMain`**: Android-specific implementations, including the `AlertService` (Foreground Service), Notification Management, and MediaPlayer integration.
+- **`iosApp`**: SwiftUI wrapper for the shared KMP core.
+
+---
+
+## 📂 Module & File Structure
+
+- **`com.falling.anwar.domain`**:
+    - `FallStore.kt`: The central state machine managing `NORMAL` vs `ALERT` states.
+    - `AnwarSignature.kt`: Internal identifiers and metadata.
+- **`com.falling.anwar.ui.screens`**:
+    - `HomeScreen.kt`: High-contrast monitoring dashboard.
+    - `AlertScreen.kt`: Tactical emergency interface with countdown and siren control.
+- **`com.falling.anwar.android`**:
+    - `AlertService.kt`: Foreground service for background siren and notifications.
+
+---
+
+## 🛠️ Setup & Run
+
+### Android
+1. Open the project in **Android Studio (Ladybug or newer)**.
+2. Ensure you have the Android SDK 34+ installed.
+3. Run `gradle sync`.
+4. Run the `composeApp` module on a physical device or emulator.
+
+### iOS
+1. Open the `iosApp/iosApp.xcworkspace` in **Xcode**.
+2. Build and run on a Simulator or iPhone.
+
+---
+
+## 🔑 Permissions
+
+The app requires the following Android permissions:
+- `android.permission.POST_NOTIFICATIONS`: Required for Android 13+ to show the alert notification.
+- `android.permission.FOREGROUND_SERVICE`: To keep the siren active when the app is backgrounded.
+- `android.permission.VIBRATE`: For haptic feedback during alerts.
+
+---
+
+## 🧪 How to Test (Hidden Debug)
+
+To simulate a fall event without hardware:
+1. Ensure the app is a **Debug Build**.
+2. Navigate to the **Home Screen**.
+3. **Tap the "FALLING APP" title 4 times** within 1.5 seconds.
+4. The app will immediately trigger the `FALL` logic, starting the siren and alert UI.
+
+---
+
+## 🤖 Future AI Integration
+
+The `FallStore` is designed to be fed by any `FallEventSource`. Current implementation uses a binary protocol:
+```kotlin
+enum class FallEvent { FALL, NO_FALL }
 ```
-FallingApp/
-├── composeApp/
-│   ├── src/
-│   │   ├── commonMain/                  # Shared Business Logic & UI
-│   │   │   ├── kotlin/com/falling/anwar/
-│   │   │   │   ├── domain/              # Store, State Management
-│   │   │   │   ├── ui/
-│   │   │   │   │   ├── theme/           # Healthcare Material3 Theme
-│   │   │   │   │   ├── components/      # Reusable Senior-friendly UI
-│   │   │   │   │   └── screens/         # Home & Alert Screens
-│   │   │   │   └── debug/               # Hidden Debug Gesture & Panel
-│   │   ├── androidMain/                 # Android Specific Implementations
-│   │   │   ├── kotlin/com/falling/anwar/
-│   │   │   │   ├── AlertService.kt      # Foreground Service & Siren
-│   │   │   │   └── UiPreviews.kt        # Android Studio UI Previews
-│   │   └── iosMain/                     # iOS Specific Implementations
-├── iosApp/                              # iOS Xcode Project
-└── README.md                            # You are here
-```
+New AI models can be integrated by emitting these events into the `FallStore.onEvent()` stream via Bluetooth, MQTT, or local sensor processing.
 
 ---
 
-## 5. Setup & Run
+## 🎬 Demo Script (90s)
 
-### Requirements
-- Android Studio (Ladybug/Meerkat+)
-- JDK 17
-- Xcode (for iOS)
-
-### Installation
-1. Clone the repository.
-2. **Android:** Run the `composeApp` configuration.
-3. **iOS:** Run the `iosApp` configuration from Android Studio or Xcode.
+1. **Intro (0-15s)**: Show the Home Screen. Highlight the clean "SAFE" UI and explain that it's monitoring via AI.
+2. **Trigger (15-30s)**: Perform the **hidden 4-tap gesture**. Explain that this simulates the AI hardware detecting a fall.
+3. **Alert (30-60s)**: The screen turns Red, siren starts, and notification appears. Point out that `NO_FALL` wouldn't stop this—it's a critical safety lock.
+4. **Resolution (60-90s)**: Tap the large green **"I AM SAFE"** button. The siren stops, the notification disappears, and the UI returns to the Green "SAFE" state.
 
 ---
-
-## 6. Testing with Hidden Debug Panel
-To simulate a fall during the demo:
-1. Ensure you are running a **Debug** build.
-2. On the Home screen, **tap the "Falling App" title 4 times** within 1.5 seconds.
-3. A "Debug Controls" panel will appear.
-4. Tap **"Trigger FALL"** to initiate the emergency sequence.
-5. Tap **"Acknowledge OK"** to return to normal monitoring.
-
----
-
-## 7. Competition Demo Steps (30s)
-1. **Show Normal State:** Point out the clean healthcare UI and the "Monitoring" status pulse.
-2. **Trigger Fall:** Tap title 4 times -> Trigger FALL.
-3. **Emergency Response:** Observe the red Alert screen, hear the siren, and show the Android notification.
-4. **Resolution:** Tap "I'M OK" to stop the siren and show the updated "Last Event" timestamp on the Home screen.
-
----
-
-## 8. Permissions
-- `POST_NOTIFICATIONS`: For emergency alerts.
-- `FOREGROUND_SERVICE`: To maintain the alarm in the background.
-- `VIBRATE`: For haptic feedback.
+© 2024 Falling App - com.falling.anwar

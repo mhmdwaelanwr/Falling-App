@@ -13,7 +13,7 @@ fun HomeScreenPreview() {
     FallingTheme {
         HomeScreen(
             lastFallTimestamp = Clock.System.now().toEpochMilliseconds(),
-            onOpenDebug = {}
+            onSimulateFall = {}
         )
     }
 }

@@ -33,13 +33,14 @@ class AlertService : Service() {
 
     private fun startSiren() {
         if (mediaPlayer == null) {
-            val resId = resources.getIdentifier("siren", "raw", packageName)
+            // Updated to use "alarm" as requested
+            val resId = resources.getIdentifier("alarm", "raw", packageName)
             if (resId != 0) {
                 mediaPlayer = MediaPlayer.create(this, resId)
             }
             
             if (mediaPlayer == null) {
-                // Last resort fallback if siren.mp3 is missing
+                // Last resort fallback if alarm.mp3 is missing
                 val alert = android.provider.Settings.System.DEFAULT_RINGTONE_URI
                 mediaPlayer = MediaPlayer().apply {
                     setDataSource(applicationContext, alert)
@@ -56,14 +57,16 @@ class AlertService : Service() {
                 isLooping = true
                 if (!isPlaying) {
                     try {
-                        if (mediaPlayer?.isLooping == true) { // Prepared if created from resId
-                             start()
-                        } else {
+                        // Check if the mediaPlayer is already prepared (created from resource)
+                        // If not, we might need to prepare it.
+                        start()
+                    } catch (e: Exception) {
+                        try {
                             prepare()
                             start()
+                        } catch (ex: Exception) {
+                            // Handle potential prepare/start issues
                         }
-                    } catch (e: Exception) {
-                        // Handle potential prepare/start issues
                     }
                 }
             }

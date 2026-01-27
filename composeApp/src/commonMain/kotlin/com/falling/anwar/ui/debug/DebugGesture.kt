@@ -4,13 +4,14 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import com.falling.anwar.isDebugBuild
 import kotlinx.datetime.Clock
 
 @Composable
 fun Modifier.hiddenDebugTapTarget(
     tapsRequired: Int = 4,
     windowMs: Long = 1500,
-    enabled: Boolean = true,
+    enabled: Boolean = isDebugBuild,
     onTriggered: () -> Unit
 ): Modifier {
     if (!enabled) return this
@@ -30,7 +31,7 @@ fun Modifier.hiddenDebugTapTarget(
 
             if (tapCount >= tapsRequired) {
                 onTriggered()
-                tapCount = 0 // Reset
+                tapCount = 0
             }
         }
     }

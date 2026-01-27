@@ -24,9 +24,7 @@ class MainActivity : ComponentActivity() {
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        // Handle permission result if needed
-    }
+    ) { _ -> }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -38,7 +36,6 @@ class MainActivity : ComponentActivity() {
         val platformActions = AndroidPlatformActions(this)
         fallStore = FallStore(Settings(), alertExecutor)
 
-        // Observe events from mock source
         mockEventSource.events()
             .onEach { fallStore.onEvent(it) }
             .launchIn(lifecycleScope)

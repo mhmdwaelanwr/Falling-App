@@ -26,7 +26,6 @@ class FallStore(
     val lastFallTimestamp: StateFlow<Long?> = _lastFallTimestamp.asStateFlow()
 
     init {
-        // Restore alert if app was in ALERT state on start
         if (_uiState.value == FallUiState.ALERT) {
             alertExecutor.startAlert()
         }
@@ -55,7 +54,7 @@ class FallStore(
     }
 
     companion object {
-        private const val KEY_UI_STATE = "fall_ui_state"
-        private const val KEY_TIMESTAMP = "last_fall_timestamp"
+        private const val KEY_UI_STATE = "${AnwarSignature.PREF_PREFIX}ui_state"
+        private const val KEY_TIMESTAMP = "${AnwarSignature.PREF_PREFIX}last_fall_ts"
     }
 }

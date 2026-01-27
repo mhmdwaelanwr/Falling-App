@@ -7,7 +7,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.falling.anwar.domain.*
-import com.falling.anwar.ui.debug.DebugPanel
 import com.falling.anwar.ui.screens.AlertScreen
 import com.falling.anwar.ui.screens.HomeScreen
 import com.falling.anwar.ui.theme.FallingTheme
@@ -20,7 +19,6 @@ fun App(
 ) {
     val uiState by fallStore.uiState.collectAsState()
     val lastFallTimestamp by fallStore.lastFallTimestamp.collectAsState()
-    var showDebugPanel by remember { mutableStateOf(false) }
 
     FallingTheme {
         Surface(
@@ -36,7 +34,7 @@ fun App(
                 when (state) {
                     FallUiState.NORMAL -> HomeScreen(
                         lastFallTimestamp = lastFallTimestamp,
-                        onOpenDebug = { showDebugPanel = true }
+                        onSimulateFall = { fallStore.onEvent(FallEvent.FALL) }
                     )
                     FallUiState.ALERT -> AlertScreen(
                         timestamp = lastFallTimestamp,
@@ -44,13 +42,6 @@ fun App(
                         onCallEmergency = { platformActions.callEmergency() }
                     )
                 }
-            }
-
-            if (showDebugPanel) {
-                DebugPanel(
-                    fallStore = fallStore,
-                    onDismiss = { showDebugPanel = false }
-                )
             }
         }
     }
