@@ -173,12 +173,12 @@ fun StatusBadge(
 }
 
 @Composable
-fun StatusChip(label: String) {
+fun StatusChip(label: String, modifier: Modifier = Modifier) {
     Surface(
         color = Color(0xFFF0FDF4),
         shape = RoundedCornerShape(14.dp),
         border = androidx.compose.foundation.BorderStroke(1.dp, NormalGreen.copy(alpha = 0.3f)),
-        modifier = Modifier.padding(end = 16.dp)
+        modifier = modifier.padding(end = 16.dp)
     ) {
         Text(
             text = label.uppercase(),

@@ -85,15 +85,17 @@ fun HomeScreen(
                                 fontWeight = FontWeight.ExtraBold,
                                 color = Color(0xFF1E293B),
                                 letterSpacing = 2.sp
-                            ),
+                            )
+                        )
+                    },
+                    actions = {
+                        StatusChip(
+                            label = "STABLE",
                             modifier = Modifier.hiddenDebugTapTarget(
                                 tapsRequired = 4,
                                 onTriggered = onSimulateFall
                             )
                         )
-                    },
-                    actions = {
-                        StatusChip("STABLE")
                     },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                         containerColor = Color.Transparent
@@ -158,8 +160,7 @@ fun HomeScreen(
                         Spacer(modifier = Modifier.weight(1f))
 
                         Text(
-                              text = "Arab Open University - Egypt",
-                         //   text = "Engine v1.0 by ${AnwarSignature.AUTHOR}",
+                            text = "Arab Open University - Egypt",
                             style = MaterialTheme.typography.bodySmall.copy(
                                 color = Color(0xFF94A3B8),
                                 fontWeight = FontWeight.Medium
