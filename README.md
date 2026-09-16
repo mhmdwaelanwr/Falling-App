@@ -11,7 +11,14 @@
   <img alt="IEEE CASS Competition 2026" src="https://img.shields.io/badge/IEEE%20CASS%202026-University%20Track-00629B?style=flat-square">
 </p>
 
+<p align="center">
+  <a href="https://github.com/mhmdwaelanwr/Falling-App/actions/workflows/android-ci.yml"><img alt="Android CI" src="https://github.com/mhmdwaelanwr/Falling-App/actions/workflows/android-ci.yml/badge.svg"></a>
+  <a href="https://github.com/mhmdwaelanwr/Falling-App/actions/workflows/repository-health.yml"><img alt="Repository Health" src="https://github.com/mhmdwaelanwr/Falling-App/actions/workflows/repository-health.yml/badge.svg"></a>
+</p>
+
 Falling App is an experimental safety interface for consuming fall-detection events and turning them into a persistent alert workflow. The project focuses on shared cross-platform state and UI, Android background alert behavior, and a manual acknowledgement model that prevents a later `NO_FALL` event from silently clearing an active emergency.
+
+> **Project status:** active engineering prototype / competition demo. This repository is the current source of truth; older local or Drive snapshots are treated as historical backups unless a specific missing item is intentionally recovered. It is not a certified medical device or a replacement for professional emergency systems.
 
 ## Competition context
 
@@ -26,8 +33,6 @@ The competition project focused on the software response layer of a fall-detecti
 - **Participation certificate date:** January 27, 2026
 
 For a competition-oriented walkthrough, problem statement, demo flow, and engineering scope, see **[Competition Showcase](docs/COMPETITION_SHOWCASE.md)**.
-
-> **Project status:** prototype / engineering demo. It is not a certified medical device or a replacement for professional emergency systems.
 
 ## What it demonstrates
 
@@ -95,18 +100,31 @@ Key components include:
 - `AlertScreen.kt` — active emergency interface and countdown.
 - `AlertService.kt` — Android foreground service for persistent alert behavior.
 
+The Gradle module also contains iOS and JVM/Desktop targets alongside Android, so deeper platform work can be developed without replacing the shared state/UI model.
+
 ## Running the project
 
 ### Android
 
 1. Open the project in Android Studio.
-2. Install the required Android SDK components.
+2. Install the required Android SDK components (the current project targets Android API 36).
 3. Sync Gradle.
 4. Run the `composeApp` module on an emulator or physical Android device.
+
+Command-line validation:
+
+```bash
+./gradlew :composeApp:compileDebugKotlinAndroid
+./gradlew :composeApp:testDebugUnitTest
+```
 
 ### iOS
 
 Open the iOS project from the `iosApp` directory in Xcode and run it on a simulator or supported device.
+
+### Desktop
+
+A JVM/Desktop target is present for development/demo use. Its long-term role can be refined as the project evolves.
 
 ## Android permissions
 
@@ -135,7 +153,18 @@ enum class FallEvent {
 }
 ```
 
-Potential transports include Bluetooth, MQTT, local sensor processing, or another application/service layer.
+Potential transports include Bluetooth, MQTT, local sensor processing, or another application/service layer. The roadmap intentionally recommends selecting and completing one transport end to end before adding several partial integrations.
+
+## Repository baseline
+
+The repository includes automated Android compile/test validation plus a lightweight repository-health workflow that rejects common generated/sensitive files and scans text sources for common committed-secret patterns.
+
+For staged future work, see:
+
+- **[Roadmap](ROADMAP.md)**
+- **[Security & Safety](SECURITY.md)**
+- **[Contributing](CONTRIBUTING.md)**
+- **[Competition Showcase](docs/COMPETITION_SHOWCASE.md)**
 
 ## Scope and safety note
 
